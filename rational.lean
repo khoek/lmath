@@ -31,15 +31,13 @@ end
 
 instance pair_setoid := setoid.mk q_law (mk_equivalence q_law q_refl q_symm q_trans)
 
-def pair_add : bop pair :=
-    assume a b : pair,
-    have hnz : a.2 * b.2 ≠ 0, from nonzero_mul a.non_zero b.non_zero,
-    pair.mk (a.1 * b.2 + b.1 * a.2) (a.2 * b.2) hnz
+def pair_add : bop pair
+    := λ a b : pair, pair.mk (a.1 * b.2 + b.1 * a.2) (a.2 * b.2)
+        (nonzero_mul a.non_zero b.non_zero)
 
-def pair_mul : bop pair :=
-    assume a b : pair,
-    have hnz : a.2 * b.2 ≠ 0, from nonzero_mul a.non_zero b.non_zero,
-    pair.mk (a.1 * b.1) (a.2 * b.2) hnz
+def pair_mul : bop pair
+    := λ a b : pair, pair.mk (a.1 * b.1) (a.2 * b.2)
+        (nonzero_mul a.non_zero b.non_zero)
 
 --proving well-definedness, and then commutativity
 
