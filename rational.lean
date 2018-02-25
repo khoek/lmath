@@ -117,4 +117,9 @@ def rat_leq (a b : ℚℚ) : Prop := (quot.out a).1 * (quot.out b).2 ≤ (quot.o
 
 #check rat_leq
 
---Scott: Why is this definition of rat_leq okay? Even though it secretly is, it may not even be well-defined in the sense which I intend. I suppose the ``constructive'' interpretation is that there is some distinguished function quot.out : ℚℚ → pair which can reliably give the same element for each equivalence class. This is still very strange to me! Am I really just thinking that the Axiom of Choice is strange?
+-- Scott: Why is this definition of rat_leq okay? Even though it secretly is, it
+-- may not even be well-defined in the sense which I intend. I suppose the 
+-- ``constructive'' interpretation is that there is some distinguished function 
+-- quot.out : ℚℚ → pair which can reliably give the same element for each 
+-- equivalence class. This is still very strange to me! Am I really just 
+-- thinking that the Axiom of Choice is strange?
