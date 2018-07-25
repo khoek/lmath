@@ -3,6 +3,8 @@ import tactic.ring
 
 import .number
 import .binary_op
+import .order
+import .facts
 
 --define pairs and the rational equality law
 
@@ -13,9 +15,9 @@ structure pair := mk ::
 def q_law : pair → pair → Prop := λ a b : pair, a.1 * b.2 = b.1 * a.2
 
 theorem q_refl : ∀ ( a : pair ), q_law a a
-    := by unfold q_law; tidy
+    := by unfold q_law; intro a; refl
 theorem q_symm : ∀ ( a b : pair ), q_law a b → q_law b a
-    := by unfold q_law; tidy
+    := by unfold q_law; intros a b; tidy
 theorem q_trans : ∀ (a b c : pair), (q_law a b) → (q_law b c) → (q_law a c) := begin
     intros a b c,
     unfold q_law,
@@ -107,13 +109,42 @@ def pair_add_rat_direct : pair → pair → ℚℚ
 := λ a b : pair, (ℚℚ.mk (pair_add a b))
 example : ∀ a b : pair, pair_add_rat_direct a b = (induced_quobop pair_setoid pair_add) a b := by tidy
 
-#check q_law
-
 --order
 
-def rat_leq (a b : ℚℚ) : Prop := (quot.out a).1 * (quot.out b).2 ≤ (quot.out b).1 * (quot.out a).2
+def rat_leq_rel (a b : ℚℚ) : Prop := (quot.out a).1 * (quot.out b).2 ≤ (quot.out b).1 * (quot.out a).2
 
-#check rat_leq
+lemma rat_req_refl : ∀ a : ℚℚ, rat_leq_rel a a := by unfold rat_leq_rel; tidy
+lemma rat_req_antisymm : ∀ a b : ℚℚ, rat_leq_rel a b → rat_leq_rel b a → a = b :=
+begin
+    intros a b h1 h2,
+    have hm : (quot.out b).x * (quot.out a).y = (quot.out a).x * (quot.out b).y,
+        unfold rat_leq_rel at *,
+        apply eq.symm (leq_fact h1 h2),
+    clear h1 h2,
+    have hn : ℚℚ.mk (quot.out a) = ℚℚ.mk (quot.out b),
+        have hl : q_law (quot.out a) (quot.out b),
+            unfold q_law,
+            apply eq.symm hm,
+        apply (@quotient_fact pair pair_setoid (quot.out a) (quot.out b)),
+        exact hl,
+    transitivity,
+    apply eq.symm (quotient.out_eq a),
+    transitivity,
+    apply hn,
+    apply quotient.out_eq,
+end
+
+#check quotient pair_setoid
+#check @quotient.out_eq pair pair_setoid 
+
+lemma rat_req_trans : ∀ a b c : ℚℚ, rat_leq_rel a b → rat_leq_rel b c → rat_leq_rel a c :=
+begin
+    intros a b c h1 h2,
+    unfold rat_leq_rel at *,
+    admit
+end
+
+#check rat_leq_rel
 
 -- Scott: Why is this definition of rat_leq okay? Even though it secretly is, it
 -- may not even be well-defined in the sense which I intend. I suppose the 
